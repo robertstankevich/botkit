@@ -169,6 +169,17 @@ controller.hears(['uptime','identify yourself','who are you','what is your name'
 
 });
 
+controller.hears(['who made you'],'direct_message,direct_mention,mention',function(bot, message) {
+
+    controller.storage.users.get(message.user,function(err, user) {
+        if (user && user.name) {
+            bot.reply(message,user.name + ' made me');
+        } else {
+            bot.reply(message,'I don\'t know yet!');
+        }
+    });
+});
+
 function formatUptime(uptime) {
     var unit = 'second';
     if (uptime > 60) {
