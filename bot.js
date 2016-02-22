@@ -137,28 +137,47 @@ controller.hears(['Who made you','who is your daddy'],'direct_message,direct_men
 });
 
 controller.hears(['prime'],'direct_message,direct_mention,mention',function(bot, message) {
-            bot.reply(message "First ten prime numbers are: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29");    
+            bot.reply(message, 'First ten prime numbers are: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29');    
 });
 
 controller.hears(['prime (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
-
-				var input = message.text.match(/prime (.*)/i);
+				
+				var input = message.match[1];
 				var x = parseInt(input);
-				var check = new Boolean("true");
+				console.log("X is"+x);
+				var check = true;
 				
-				for(int i = 2; i<=x; i++) {
-				if(x%i!=0){
-					check= false;
-					break;
-					}
-				}
 				
-				if(check) {
-					bot.reply(message "The number you gave is prime");
+				//if(x>3 && (x%2 ==0 || x%3==0)) {
+				
+//				var start = 2;
+//				while(start <=Math.sqrt(x)) {
+//					if(x%start++<1) {
+//						//bot.reply(message, 'The number you gave is not prime');
+//						check = false;
+//						break;
+//					}else{
+//						check = true;
+//					}								
+//				}
+
+
+			var d = x-1;
+
+			while(d>1) {
+			console.log("X is"+x+" D is"+d);
+				if((x%d)==0) {
+				check=false;
+				break;
 				}
-				else {
-					bot.reply(message "The number you gave is not prime");
-				}
+				d--;
+			}
+			
+			if(check) {
+					bot.reply(message, 'The number you gave is prime!');
+			}else{
+					bot.reply(message, 'The number you gave is not prime!');
+			}
 });
 
 
