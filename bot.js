@@ -133,14 +133,7 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
 });
 
 controller.hears(['Who made you','who is your daddy'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    controller.storage.users.get(message.user,function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, user.name+' made me.');
-        } else {
-            bot.reply(message,'I have never heard his name');
-        }
-    });
+                bot.reply(message, 'Robert made me.');
 });
 
 controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
