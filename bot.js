@@ -136,6 +136,33 @@ controller.hears(['Who made you','who is your daddy'],'direct_message,direct_men
                 bot.reply(message, 'Robert made me.');
 });
 
+controller.hears(['prime'],'direct_message,direct_mention,mention',function(bot, message) {
+            bot.reply(message "First ten prime numbers are: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29");    
+});
+
+controller.hears(['prime (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+
+				var input = message.text.match(/prime (.*)/i);
+				var x = parseInt(input);
+				var check = new Boolean("true");
+				
+				for(int i = 2; i<=x; i++) {
+				if(x%i!=0){
+					check= false;
+					break;
+					}
+				}
+				
+				if(check) {
+					bot.reply(message "The number you gave is prime");
+				}
+				else {
+					bot.reply(message "The number you gave is not prime");
+				}
+});
+
+
+
 controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
 
     bot.startConversation(message,function(err, convo) {
