@@ -169,27 +169,20 @@ controller.hears(['uptime','identify yourself','who are you','what is your name'
 
 });
 
-controller.hears(['fibonacci'],'direct_message,direct_mention,mention',function(bot, message) {
-    console.log(JSON.stringify(message));
-    var param = message.text.replace('fibonacci','').trim();
-    console.log(param);
-
+controller.hears(['fibonacci(.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+    var param = message.match[1].trim();
     if(param.length==0){
         var a = 0, b = 1;
-        var fiboStr = "";
+        var fibos = [];
         for (var i = 1; i <= 10; i++) {
             a = a + b;
             b = a - b;
-            fiboStr+=""+a;
-            if(i!==param){
-                fiboStr+=", "
-            }
+            fibos.push(a);
         }
-        bot.reply(message, fiboStr);
+        bot.reply(message, fibos.toString());
     }else if(!isNaN(param) && Number(param) % 1 === 0) {
         var couldBeFibo = true;
         var isSurelyFibo = false;
-
         var a = 0, b = 1;
         var fibos = [];
         var i = 1;
@@ -205,15 +198,9 @@ controller.hears(['fibonacci'],'direct_message,direct_mention,mention',function(
             }
         }
         if (isSurelyFibo) {
-            i = i <= 10 ? 0 : fibos.length - 10;
-            var fiboStr = "";
-            for (; i < fibos.length; i++) {
-                fiboStr+=fibos[i];
-                if ((fibos.length - 1) !== i) {
-                    fiboStr += ", ";
-                }
-            }
-            bot.reply(message, fiboStr);
+            start = i <= 10 ? 0 : fibos.length - 10;
+            var tenLastFibos = fibos.slice(start, fibos.length);
+            bot.reply(message, tenLastFibos.toString());
         }else{
             bot.reply(message, "not fibonacci number");
         }
@@ -221,7 +208,6 @@ controller.hears(['fibonacci'],'direct_message,direct_mention,mention',function(
         bot.reply(message, "Give me a number parameter");
     }
 });
-
 
 function formatUptime(uptime) {
     var unit = 'second';
