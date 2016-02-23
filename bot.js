@@ -83,6 +83,23 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
+const weather = require('./weather/lib/weather.js');
+
+controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+
+    var input1 = message.match[1];
+    var input2 = message.match[2];
+    console.log(input1);
+    console.log(input2);
+    weather.find({search: input1 + " " + input2, degreeType: 'C'}, function (err, result) {
+        console.log(JSON.stringify(result, null, 2));
+        if(result !== undefined){
+            bot.reply(message, JSON.stringify(result[0].current.temperature, null, 2));
+        }else{
+            bot.reply(message, "You dont make any sence");
+        }
+    });
+});
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
 
