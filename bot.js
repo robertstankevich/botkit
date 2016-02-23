@@ -235,8 +235,12 @@ controller.hears('prime (.*)',['direct_message', 'direct_mention', 'mention'],fu
             if (MathHelper.isPrime(number)) {
                 primes.push(number);
             }
+            
+            if(number ==0) {
+            	break;
+            }
 
-            number++;
+            number--;
         }
 
         var reply = "";
