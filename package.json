@@ -9,6 +9,7 @@
     "eventemitter2": "0.4.14",
     "express": "^4.13.3",
     "jfs": "^0.2.6",
+    "mocha": "^2.4.5",
     "mustache": "^2.2.1",
     "request": "^2.67.0",
     "ws": "^1.0.0",
@@ -22,6 +23,9 @@
     "tape": "^4.4.0",
     "winston": "^2.1.1"
 
+  },
+  "scripts": {
+    "test": "mocha tests/*.js"
   },
   "repository": {
     "type": "git",
