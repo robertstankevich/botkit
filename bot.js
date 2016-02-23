@@ -71,6 +71,7 @@ if (!process.env.token) {
     process.exit(1);
 }
 
+var MathHelper = require('./botmath.js');
 var Botkit = require('./lib/Botkit.js');
 var os = require('os');
 
@@ -132,57 +133,6 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
     });
 });
 
-controller.hears(['Who made you','who is your daddy'],'direct_message,direct_mention,mention',function(bot, message) {
-                bot.reply(message, 'Robert made me.');
-});
-
-controller.hears(['prime'],'direct_message,direct_mention,mention',function(bot, message) {
-            bot.reply(message, 'First ten prime numbers are: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29');    
-});
-
-controller.hears(['prime (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
-				
-				var input = message.match[1];
-				var x = parseInt(input);
-				console.log("X is "+x);
-			
-			function isPrime(x) {
-				var d = x-1;
-				while(d>1) {
-				console.log("X is "+x+" D is"+d);
-					if((x%d)==0) {
-						return false;
-					}
-					d--;
-				}
-				return true;
-			}
-			
-			if(x>1 && x%1==0 && x!=null) {
-				if(isPrime(x)) {
-					bot.reply(message, 'The number you gave is prime!');
-					bot.reply(message, 'Next ten prime numberare: ');
-					var count = 0;
-					while(count <10){
-						x++;
-						if(isPrime(x)) {
-							bot.reply(message, x+', ');
-							count++;
-						}
-					}
-				}
-			
-				else{	
-					bot.reply(message, 'The number you gave is not prime!');
-				}
-			}
-			
-			else {
-				bot.reply(message, 'Input a proper number, damn it!');
-			}
-});
-
-
 
 controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
 
@@ -210,7 +160,6 @@ controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(b
     });
 });
 
-
 controller.hears(['uptime','identify yourself','who are you','what is your name'],'direct_message,direct_mention,mention',function(bot, message) {
 
     var hostname = os.hostname();
@@ -220,45 +169,34 @@ controller.hears(['uptime','identify yourself','who are you','what is your name'
 
 });
 
-controller.hears(['fibonacci(.*)'],'direct_message,direct_mention,mention',function(bot, message) {
-    var param = message.match[1].trim();
-    if(param.length==0){
-        var a = 0, b = 1;
-        var fibos = [];
-        for (var i = 1; i <= 10; i++) {
-            a = a + b;
-            b = a - b;
-            fibos.push(a);
-        }
-        bot.reply(message, fibos.toString());
-    }else if(!isNaN(param) && Number(param) % 1 === 0) {
-        var couldBeFibo = true;
-        var isSurelyFibo = false;
-        var a = 0, b = 1;
-        var fibos = [];
-        var i = 1;
-        for (; couldBeFibo && !isSurelyFibo; i++) {
-            a = a + b;
-            b = a - b;
-            if (a === Number(param)) {
-                isSurelyFibo = true;
-            } else if (a > param) {
-                couldBeFibo = false;
-            } else {
-                fibos.push(a);
-            }
-        }
-        if (isSurelyFibo) {
-            start = i <= 10 ? 0 : fibos.length - 10;
-            var tenLastFibos = fibos.slice(start, fibos.length);
-            bot.reply(message, tenLastFibos.toString());
-        }else{
-            bot.reply(message, "not fibonacci number");
-        }
-    }else{
-        bot.reply(message, "Give me a number parameter");
+controller.hears(['fibonacci'], 'direct_message,direct_mention,mention', function(bot, message) {
+    if (message.text === 'fibonacci') {
+        bot.reply(message, '1, 1, 2, 3, 5, 8, 13, 21, 34, 55');
     }
 });
+
+controller.hears(['fibonacci ([0-9]+)'], 'direct_message,direct_mention,mention', function(bot, message) {
+    var parameter = parseInt(message.match[1]);
+    
+    var fibonacci = calculateFibonacciUpto(parameter);
+    
+    if (fibonacci[fibonacci.length-1] !== parameter) {
+        bot.reply(message, 'That is not a Fibonacci number!');
+    }
+    else {
+        bot.reply(message, fibonacci.slice(fibonacci.length-10,fibonacci.length).join(', '));
+    }
+});
+
+function calculateFibonacciUpto(goal) {
+    var fibonacci = [1, 1];
+    
+    while (fibonacci[fibonacci.length-1] < goal) {
+        fibonacci.push(fibonacci[fibonacci.length-2] + fibonacci[fibonacci.length-1]);
+    }
+    
+    return fibonacci;
+}
 
 function formatUptime(uptime) {
     var unit = 'second';
@@ -277,3 +215,39 @@ function formatUptime(uptime) {
     uptime = uptime + ' ' + unit;
     return uptime;
 }
+
+controller.hears('prime',['direct_message', 'direct_mention', 'mention'],function(bot,message) {
+    if (message.text === "prime") {
+        return bot.reply(message, '2, 3, 5, 7, 11, 13, 17, 19, 23, 29');
+    }
+});
+
+controller.hears('prime (.*)',['direct_message', 'direct_mention', 'mention'],function(bot,message) {
+
+    var parameter = parseInt(message.match[1]);
+
+    if (MathHelper.isPrime(parameter)) {
+        var primes = new Array();
+        var number = parameter + 1;
+
+        while (primes.length < 10) {
+
+            if (MathHelper.isPrime(number)) {
+                primes.push(number);
+            }
+
+            number++;
+        }
+
+        var reply = "";
+        for (var i = 0; i < primes.length; i++) {
+            reply += primes[i] + " ";
+        }
+
+        return bot.reply(message, reply);
+    }
+    else {
+        return bot.reply(message, "your parameter: " + parameter + " is not Prime number");
+    }
+});
+
