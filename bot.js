@@ -144,12 +144,12 @@ controller.hears(['prime (.*)'],'direct_message,direct_mention,mention',function
 				
 				var input = message.match[1];
 				var x = parseInt(input);
-				console.log("X is"+x);
+				console.log("X is "+x);
 			
 			function isPrime(x) {
 				var d = x-1;
 				while(d>1) {
-				console.log("X is"+x+" D is"+d);
+				console.log("X is "+x+" D is"+d);
 					if((x%d)==0) {
 						return false;
 					}
@@ -158,8 +158,8 @@ controller.hears(['prime (.*)'],'direct_message,direct_mention,mention',function
 				return true;
 			}
 			
-			if(x>1 && x%1!=0 && x!=null) {
-			if(isPrime(x)) {
+			if(x>1 && x%1==0 && x!=null) {
+				if(isPrime(x)) {
 					bot.reply(message, 'The number you gave is prime!');
 					bot.reply(message, 'Next ten prime numberare: ');
 					var count = 0;
@@ -170,13 +170,13 @@ controller.hears(['prime (.*)'],'direct_message,direct_mention,mention',function
 							count++;
 						}
 					}
+				}
+			
+				else{	
+					bot.reply(message, 'The number you gave is not prime!');
+				}
 			}
 			
-			else{
-					
-					bot.reply(message, 'The number you gave is not prime!');
-			}
-			}
 			else {
 				bot.reply(message, 'Input a proper number, damn it!');
 			}
