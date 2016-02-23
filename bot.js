@@ -226,6 +226,8 @@ function calculateFibonacciUpto(goal) {
     return fibonacci;
 }
 
+//module.exports.calculateFibonacciUpto = calculateFibonacciUpto;
+
 function formatUptime(uptime) {
     var unit = 'second';
     if (uptime > 60) {
