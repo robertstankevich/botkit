@@ -12,8 +12,9 @@
     "mocha": "^2.4.5",
     "mustache": "^2.2.1",
     "request": "^2.67.0",
+    "weather-js": "^1.0.2",
     "ws": "^1.0.0",
-	  "xml2js": "*"
+    "xml2js": "*"
   },
   "devDependencies": {
     "jscs": "^2.7.0",
@@ -22,7 +23,6 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
     "winston": "^2.1.1"
-
   },
   "scripts": {
     "test": "mocha tests/*.js"

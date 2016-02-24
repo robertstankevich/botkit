@@ -83,7 +83,7 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
-const weather = require('./weather/lib/weather.js');
+const weather = require('weather.js');
 
 controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
 
@@ -100,6 +100,7 @@ controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_men
         }
     });
 });
+
 
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
 

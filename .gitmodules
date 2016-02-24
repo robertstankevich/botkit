@@ -1,3 +1,0 @@
-[submodule "weather"]
-	path = weather
-	url = https://github.com/cmfatih/weather.git
