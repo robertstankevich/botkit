@@ -1,6 +1,6 @@
 # [Botkit](http://howdy.ai/botkit) - Best course ever!
 
-![alt tag](https://travis-ci.org/robertstankevich/botkit.svg?branch=master!:https://travis-ci.org/robertstankevich/botkit)
+[![Build Status](https://travis-ci.org/robertstankevich/botkit.svg?branch=master)](https://travis-ci.org/robertstankevich/botkit)
 
 Botkit designed to ease the process of designing and running useful, creative or
 just plain weird bots (and other types of applications) that live inside [Slack](http://slack.com)!
