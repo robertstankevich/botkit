@@ -84,6 +84,36 @@ var bot = controller.spawn({
 }).startRTM();
 
 const weather = require('weather-js');
+const request = require('request');
+
+controller.hears(['speedrun (.*) (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+
+    if(message.match[1]!==undefined && message.match[2]!==undefined) {
+        var gamename = message.match[1];
+        console.log(gamename);
+        var difficulty=message.match[2];
+
+        request.get({url: "http://www.speedrun.com/api_records.php?series="+gamename, timeout: 15000}, function(err, res, body) {
+            if(err){
+                console.log("ERROR: " + err);
+                return callback(err);
+            }
+            else if(res.statusCode !== 200) {
+                console.log("res.statusCode !== 200");
+                return callback('Request failed (' + res.statusCode + ')');
+            }
+            else{
+                if(body.hasOwnProperty(gamename)){
+                    var game = body[gamename];
+                    if(game.hasOwnProperty(difficulty)){
+                        var gameWithDif =game[difficulty];
+                        bot.reply(message,gameWithDif['timeigt'], null, 2);
+                    }
+                }
+            }
+        });
+    }
+});
 
 controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
 
