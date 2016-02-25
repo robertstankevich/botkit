@@ -86,7 +86,7 @@ var bot = controller.spawn({
 const weather = require('weather-js');
 const request = require('request');
 
-controller.hears(['speedrun (.*) (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+controller.hears(['speedrun (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
 
     if(message.match[1]!==undefined && message.match[2]!==undefined) {
         var gamename = message.match[1];
