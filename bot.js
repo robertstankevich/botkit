@@ -86,33 +86,49 @@ var bot = controller.spawn({
 const weather = require('weather-js');
 const request = require('request');
 
-controller.hears(['speedrun (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    if(message.match[1]!==undefined && message.match[2]!==undefined) {
-        var gamename = message.match[1];
-        console.log(gamename);
-        var difficulty=message.match[2];
-
-        request.get({url: "http://www.speedrun.com/api_records.php?series="+gamename, timeout: 15000}, function(err, res, body) {
-            if(err){
-                console.log("ERROR: " + err);
-                return callback(err);
-            }
-            else if(res.statusCode !== 200) {
-                console.log("res.statusCode !== 200");
-                return callback('Request failed (' + res.statusCode + ')');
-            }
-            else{
-                if(body.hasOwnProperty(gamename)){
-                    var game = body[gamename];
-                    if(game.hasOwnProperty(difficulty)){
-                        var gameWithDif =game[difficulty];
-                        bot.reply(message,gameWithDif['timeigt'], null, 2);
+controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+    var gameInfo;
+    if (message.match[1].indexOf(', ')!==-1) {
+        gameInfo = message.match[1].split(", ");
+    }else{
+        gameInfo=[];
+        gameInfo.push(message.match[1]);
+    }
+    console.log(gameInfo);
+    var gamename = gameInfo[0];
+    console.log(gamename);
+    var difficulty;
+    if(gameInfo.length>1){
+        difficulty=gameInfo[1];
+    }
+    gamename.replace(' ', '%20');
+    request.get({url: "http://www.speedrun.com/api_records.php?game="+gamename, timeout: 15000}, function(err, res, body) {
+        if(err){
+            console.log("ERROR: " + err);
+            return callback(err);
+        }
+        else if(res.statusCode !== 200) {
+            console.log("res.statusCode !== 200");
+            return callback('Request failed (' + res.statusCode + ')');
+        }
+        else{
+            body = JSON.parse(body);
+            console.log(body);
+            if(body.hasOwnProperty(gamename)){
+                var game = body[gamename];
+                if(difficulty !== undefined && game.hasOwnProperty(difficulty)){
+                    var gameWithDif =game[difficulty];
+                    bot.reply(message,gameWithDif['timeigt'], null, 2);
+                    bot.reply(message,gameWithDif['video'], null, 2);
+                }else if(difficulty===undefined){
+                    for(key in game){
+                        bot.reply(message,key, null, 2);
                     }
                 }
             }
-        });
-    }
+        }
+    });
+
 });
 
 controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
