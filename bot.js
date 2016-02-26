@@ -349,7 +349,7 @@ function formatUptime(uptime) {
 controller.on('channel_leave',function(bot,message) {
 	
 	controller.storage.users.get(message.user, function(err, user) {
-	if(user.name!==undefined) {
+	if(user && user.name) {
 		bot.reply(message,"Ok, " + user.name+", go find a new channel of your own with blackjack and hookers!");
 	}
 	else {
