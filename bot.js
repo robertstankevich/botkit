@@ -131,6 +131,18 @@ controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',funct
 
 });
 
+controller.on('user_channel_join',function(bot, message) {
+	controller.storage.users.get(message.user,function(err, user) {
+        if (user && user.name) {
+            bot.reply(message,'Welcome to the channel ' + user.name + '!!');
+        } else {
+            bot.reply(message,'Welcome to the channel!');
+        }
+    });
+});
+
+
+
 controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
 
     var input1 = message.match[1];
@@ -273,7 +285,7 @@ function calculateFibonacciUpto(goal) {
     return fibonacci;
 }
 
-//module.exports.calculateFibonacciUpto = calculateFibonacciUpto;
+// module.exports.calculateFibonacciUpto = calculateFibonacciUpto;
 
 function formatUptime(uptime) {
     var unit = 'second';
