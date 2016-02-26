@@ -86,6 +86,8 @@ var bot = controller.spawn({
 const weather = require('weather-js');
 const request = require('request');
 
+
+
 controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
     var gameInfo;
     if (message.match[1].indexOf(', ')!==-1) {
@@ -171,13 +173,14 @@ controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function
             bot.botkit.log('Failed to add emoji reaction :(',err);
         }
     });
-
-
+	var answers = ["Hello", "Hi", "Good day to you", "HELLO-HELLO-HELLO", "Moi", "Salute", "Greetings", "Hallo"]
+	var rand = Math.floor((Math.random() * answers.length));
+	
     controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
-            bot.reply(message,'Hello ' + user.name + '!!');
+            bot.reply(message,answers[rand] + ", " + user.name + '!!');
         } else {
-            bot.reply(message,'Hello.');
+            bot.reply(message,answers[rand]);
         }
     });
 });
@@ -304,6 +307,20 @@ function formatUptime(uptime) {
     uptime = uptime + ' ' + unit;
     return uptime;
 }
+
+
+
+controller.on('channel_leave',function(bot,message) {
+	
+	controller.storage.users.get(message.user, function(err, user) {
+	if(user.name!==undefined) {
+		bot.reply(message,"Ok, " + user.name+", go find a new channel of your own with blackjack and hookers!");
+	}
+	else {
+		bot.reply(message,"Someone left the channel");
+	}
+	});
+});
 
 controller.hears('prime',['direct_message', 'direct_mention', 'mention'],function(bot,message) {
     if (message.text === "prime") {
