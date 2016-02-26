@@ -86,7 +86,47 @@ var bot = controller.spawn({
 const weather = require('weather-js');
 const request = require('request');
 
+controller.hears(['issues (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+    if (message.match[1].indexOf(', ')===-1) {
+        bot.reply(message,'wrong format', null, 2);
+    }else {
+        var input = message.match[1].split(", ");
+        var options = {
+            url: "https://api.github.com/repos/"+input[0]+"/"+input[1]+"/issues",
+            timeout: 15000,
+            headers: {
+                'User-Agent': input[0]
+            }
+        };
+        request.get(options, function (err, res, body) {
+            if (err) {
+                console.log("ERROR: " + err);
+                return callback(err);
+            }
+            else if (res.statusCode !== 200) {
+                console.log("res.statusCode !== 200");
+                return callback('Request failed (' + res.statusCode + ')');
+            }
+            else {
+                var issues = JSON.parse(body);
 
+                var issueStr = "";
+                for(var i = 0; i<issues.length; i++){
+                    var issue = issues[i];
+                    for(var j = 2; j<input.length; j++){
+                        if(issue.hasOwnProperty(input[j])){
+                            issueStr+= input[j]+": " + issue[input[j]] + ", ";
+                        }
+                        issueStr+="\n";
+                    }
+                    issueStr+="\n";
+                }
+                bot.reply(message, issueStr, null, 2);
+            }
+        });
+    }
+
+});
 
 controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
     var gameInfo;
