@@ -173,6 +173,16 @@ controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',funct
 
 });
 
+controller.on('user_typing',function(bot, message) {
+	controller.storage.users.get(message.user,function(err, user) {
+        if (user && user.name) {
+            bot.reply(message, user.name + ' is typing something. Is it going to be a novel?');
+        } else {
+            bot.reply(message,'Someone is typing... STOP IT! DO NOT TYPE! YOU ARE MAKING ME NERVOUS');
+        }
+    });
+});
+
 controller.on('user_channel_join',function(bot, message) {
 	controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
@@ -182,8 +192,6 @@ controller.on('user_channel_join',function(bot, message) {
         }
     });
 });
-
-
 
 controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
 
