@@ -86,6 +86,44 @@ var bot = controller.spawn({
 const weather = require('weather-js');
 const request = require('request');
 
+controller.hears(['issues (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+    if (message.match[1].indexOf(', ')===-1) {
+        bot.reply(message,'wrong format', null, 2);
+    }else {
+        var input = message.match[1].split(", ");
+        var options = {
+            url: "https://api.github.com/repos/"+input[0]+"/"+input[1]+"/issues",
+            timeout: 15000,
+            headers: {
+                'User-Agent': input[0]
+            }
+        };
+        gamename.replace(' ', '%20');
+        request.get(options, function (err, res, body) {
+            if (err) {
+                console.log("ERROR: " + err);
+                return callback(err);
+            }
+            else if (res.statusCode !== 200) {
+                console.log("res.statusCode !== 200");
+                return callback('Request failed (' + res.statusCode + ')');
+            }
+            else {
+                var issues = JSON.parse(body);
+                for(var i = 0; i<issues.length; i++){
+                    var issue = issues[i];
+                    for(var j = 2; j<input.length; i++){
+                        if(issue.hasOwnProperty(input[j])){
+                            bot.reply(message, issue[input[j]], null, 2);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+});
+
 controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
     var gameInfo;
     if (message.match[1].indexOf(', ')!==-1) {
@@ -131,6 +169,18 @@ controller.hears(['speedrun (.*)'],'direct_message,direct_mention,mention',funct
 
 });
 
+controller.on('user_channel_join',function(bot, message) {
+	controller.storage.users.get(message.user,function(err, user) {
+        if (user && user.name) {
+            bot.reply(message,'Welcome to the channel ' + user.name + '!!');
+        } else {
+            bot.reply(message,'Welcome to the channel!');
+        }
+    });
+});
+
+
+
 controller.hears(['How is the weather in (.*), (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
 
     var input1 = message.match[1];
@@ -159,13 +209,14 @@ controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function
             bot.botkit.log('Failed to add emoji reaction :(',err);
         }
     });
-
-
+	var answers = ["Hello", "Hi", "Good day to you", "HELLO-HELLO-HELLO", "Moi", "Salute", "Greetings", "Hallo"]
+	var rand = Math.floor((Math.random() * answers.length));
+	
     controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
-            bot.reply(message,'Hello ' + user.name + '!!');
+            bot.reply(message,answers[rand] + ", " + user.name + '!!');
         } else {
-            bot.reply(message,'Hello.');
+            bot.reply(message,answers[rand]);
         }
     });
 });
@@ -273,7 +324,7 @@ function calculateFibonacciUpto(goal) {
     return fibonacci;
 }
 
-//module.exports.calculateFibonacciUpto = calculateFibonacciUpto;
+// module.exports.calculateFibonacciUpto = calculateFibonacciUpto;
 
 function formatUptime(uptime) {
     var unit = 'second';
@@ -292,6 +343,20 @@ function formatUptime(uptime) {
     uptime = uptime + ' ' + unit;
     return uptime;
 }
+
+
+
+controller.on('channel_leave',function(bot,message) {
+	
+	controller.storage.users.get(message.user, function(err, user) {
+	if(user.name!==undefined) {
+		bot.reply(message,"Ok, " + user.name+", go find a new channel of your own with blackjack and hookers!");
+	}
+	else {
+		bot.reply(message,"Someone left the channel");
+	}
+	});
+});
 
 controller.hears('prime',['direct_message', 'direct_mention', 'mention'],function(bot,message) {
     if (message.text === "prime") {
