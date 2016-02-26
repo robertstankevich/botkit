@@ -98,7 +98,6 @@ controller.hears(['issues (.*)'],'direct_message,direct_mention,mention',functio
                 'User-Agent': input[0]
             }
         };
-        gamename.replace(' ', '%20');
         request.get(options, function (err, res, body) {
             if (err) {
                 console.log("ERROR: " + err);
@@ -110,14 +109,19 @@ controller.hears(['issues (.*)'],'direct_message,direct_mention,mention',functio
             }
             else {
                 var issues = JSON.parse(body);
+
+                var issueStr = "";
                 for(var i = 0; i<issues.length; i++){
                     var issue = issues[i];
-                    for(var j = 2; j<input.length; i++){
+                    for(var j = 2; j<input.length; j++){
                         if(issue.hasOwnProperty(input[j])){
-                            bot.reply(message, issue[input[j]], null, 2);
+                            issueStr+= input[j]+": " + issue[input[j]] + ", ";
                         }
+                        issueStr+="\n";
                     }
+                    issueStr+="\n";
                 }
+                bot.reply(message, issueStr, null, 2);
             }
         });
     }
